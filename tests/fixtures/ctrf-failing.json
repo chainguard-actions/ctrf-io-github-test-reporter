@@ -1,0 +1,35 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 3,
+      "passed": 2,
+      "failed": 1,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1700000000000,
+      "stop": 1700000005000
+    },
+    "tests": [
+      {
+        "name": "should add two numbers",
+        "status": "passed",
+        "duration": 10
+      },
+      {
+        "name": "should subtract two numbers",
+        "status": "failed",
+        "duration": 15,
+        "message": "Expected 5 but received 4"
+      },
+      {
+        "name": "should multiply two numbers",
+        "status": "passed",
+        "duration": 12
+      }
+    ]
+  }
+}

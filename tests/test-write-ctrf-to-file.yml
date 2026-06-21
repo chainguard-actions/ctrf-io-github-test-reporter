@@ -1,0 +1,40 @@
+name: Test write-ctrf-to-file option
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-passing.json
+          summary-report: true
+          annotate: false
+          write-ctrf-to-file: processed-ctrf-output.json
+
+      - name: Assert processed CTRF file was written
+        run: |
+          echo "Checking for processed CTRF output file..."
+          if [ ! -f "processed-ctrf-output.json" ]; then
+            echo "FAIL: expected processed-ctrf-output.json to exist in working directory"
+            ls -la
+            exit 1
+          fi
+          echo "File contents:"
+          cat "processed-ctrf-output.json"
+          echo "PASS: processed CTRF output file was written"
+
+      - name: Assert written file is valid JSON
+        run: |
+          node -e "
+            const fs = require('fs');
+            const content = fs.readFileSync('processed-ctrf-output.json', 'utf8');
+            JSON.parse(content);
+            console.log('PASS: written file is valid JSON');
+          "

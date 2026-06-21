@@ -1,0 +1,48 @@
+name: Test multiple report types enabled
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-passing.json
+          summary-report: true
+          test-report: true
+          skipped-report: true
+          annotate: false
+          title: "My Test Suite Results"
+
+      - name: Assert summary output is non-empty
+        env:
+          ACTUAL: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "actual summary length: ${#ACTUAL}"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty with multiple reports"
+
+      - name: Assert report output is valid JSON
+        env:
+          ACTUAL: ${{ steps.action.outputs.report }}
+        run: |
+          echo "actual report length: ${#ACTUAL}"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          echo "$ACTUAL" | node -e "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log('valid JSON');"
+          if [ $? -ne 0 ]; then
+            echo "FAIL: report output is not valid JSON"
+            exit 1
+          fi
+          echo "PASS: report output is valid JSON"
