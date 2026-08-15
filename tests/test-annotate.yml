@@ -1,0 +1,33 @@
+name: Test annotate failed tests
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-with-failures.json
+          annotate: true
+          summary-report: true
+          title: 'Annotated Failed Tests'
+
+      - name: Assert action succeeded (annotations are best-effort)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "summary length: ${#SUMMARY}"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected action to succeed with annotate=true, but got '$OUTCOME'"
+            exit 1
+          fi
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: action succeeded with annotations enabled"
