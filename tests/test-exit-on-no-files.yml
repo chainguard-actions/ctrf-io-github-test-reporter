@@ -1,22 +1,20 @@
-name: Test exit-on-no-files when no report files found
+name: Test exit-on-no-files behavior
 on:
   workflow_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_REF: refs/heads/main
-      GITHUB_EVENT_NAME: push
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      # This step should fail because no files match the glob and exit-on-no-files is true
       - id: action
         uses: .
-        with:
-          report-path: nonexistent-report-*.json
-          exit-on-no-files: true
-          annotate: false
         continue-on-error: true
+        with:
+          report-path: tests/fixtures/nonexistent-ctrf-*.json
+          exit-on-no-files: true
 
       - name: Assert action failed due to no files found
         env:
@@ -24,7 +22,7 @@ jobs:
         run: |
           echo "action outcome: $OUTCOME"
           if [ "$OUTCOME" != "failure" ]; then
-            echo "FAIL: expected action to fail when exit-on-no-files=true and no files found, got: $OUTCOME"
+            echo "FAIL: expected action to fail when exit-on-no-files=true and no files found, but outcome was '$OUTCOME'"
             exit 1
           fi
-          echo "PASS: action correctly failed when no files found with exit-on-no-files=true"
+          echo "PASS: action correctly failed when exit-on-no-files=true and no files found"

@@ -1,20 +1,26 @@
 name: 'GitHub Test Reporter'
-description: 'Build, publish and view test reports on job summaries and pull requests'
+description:
+  'Build, publish and view test reports on job summaries and pull requests'
 author: 'ctrf-io'
+
 branding:
   icon: 'check'
   color: 'green'
+
 inputs:
   # Core Configuration
   report-path:
     description: 'Path or glob pattern of the CTRF JSON files.'
     required: true
   template-path:
-    description: 'Path to the Handlebars template for customizing markdown output.'
+    description:
+      'Path to the Handlebars template for customizing markdown output.'
     required: false
   title:
-    description: 'Title to display in the GitHub Actions summary or pull request comment.'
+    description:
+      'Title to display in the GitHub Actions summary or pull request comment.'
     required: false
+
   # Report Options
   summary-report:
     description: 'Include the summary report.'
@@ -25,7 +31,8 @@ inputs:
     required: false
     default: false
   tests-changed-report:
-    description: 'Include the tests changed report showing added and removed tests.'
+    description:
+      'Include the tests changed report showing added and removed tests.'
     required: false
     default: false
   github-report:
@@ -69,7 +76,9 @@ inputs:
     required: false
     default: false
   ai-summary-report:
-    description: 'Include the AI summary report with structured analysis (summary, code issues, timeout issues, application issues, recommendations)'
+    description:
+      'Include the AI summary report with structured analysis (summary, code
+      issues, timeout issues, application issues, recommendations)'
     required: false
     default: false
   skipped-report:
@@ -89,11 +98,13 @@ inputs:
     required: false
     default: false
   insights-report:
-    description: 'Include the insights report showing test metrics and statistics.'
+    description:
+      'Include the insights report showing test metrics and statistics.'
     required: false
     default: false
   slowest-report:
-    description: 'Include a report showing the top 10 slowest tests by average duration.'
+    description:
+      'Include a report showing the top 10 slowest tests by average duration.'
     required: false
     default: false
   pull-request-report:
@@ -106,14 +117,16 @@ inputs:
     default: false
   custom-report:
     description: >
-      Include a custom report using a Handlebars template. To group tests in the custom report, use the 'group-by' or 'always-group-by' input.
-
+      Include a custom report using a Handlebars template. To group tests in the
+      custom report, use the 'group-by' or 'always-group-by' input.
     required: false
     default: false
   community-report:
-    description: 'Include the community report. Also requires community-report-name.'
+    description:
+      'Include the community report. Also requires community-report-name.'
     required: false
     default: false
+
   # Behavior Options
   summary:
     description: 'Post generated markdown to the GitHub Actions summary.'
@@ -148,7 +161,8 @@ inputs:
     required: false
     default: false
   exit-on-no-files:
-    description: 'Exit the workflow with a failure status if no test files are found.'
+    description:
+      'Exit the workflow with a failure status if no test files are found.'
     required: false
     default: false
   exit-on-fail:
@@ -156,7 +170,8 @@ inputs:
     required: false
     default: false
   exit-on-empty:
-    description: 'Exit the workflow with a failure status if no tests are found.'
+    description:
+      'Exit the workflow with a failure status if no tests are found.'
     required: false
     default: false
   use-suite-name:
@@ -172,7 +187,9 @@ inputs:
     required: false
     default: false
   always-latest-comment:
-    description: 'Create a new comment if the existing comment is not the latest in the thread.'
+    description:
+      'Create a new comment if the existing comment is not the latest in the
+      thread.'
     required: false
     default: false
   comment-tag:
@@ -180,7 +197,8 @@ inputs:
     required: false
     default: false
   write-ctrf-to-file:
-    description: 'Path to write the processed CTRF report for future processing.'
+    description:
+      'Path to write the processed CTRF report for future processing.'
     default: ''
   upload-artifact:
     description: 'Upload the processed CTRF report for future processing'
@@ -190,29 +208,38 @@ inputs:
     description: 'Collapse large reports (test-table and test-list) by default.'
     required: false
     default: false
+
   # Advanced Options
   artifact-name:
     description: 'Name of the artifact containing test reports.'
     required: false
     default: 'ctrf-report'
   previous-results-max:
-    description: 'Maximum number of previous test results to display in the report. Includes test results from current run'
+    description:
+      'Maximum number of previous test results to display in the report.
+      Includes test results from current run'
     required: false
     default: 10
   fetch-previous-results:
-    description: 'Always fetch previous workflow runs when using custom templates.'
+    description:
+      'Always fetch previous workflow runs when using custom templates.'
     required: false
     default: false
   max-workflow-runs-to-check:
-    description: 'Maximum number of workflow runs to check for previous results.'
+    description:
+      'Maximum number of workflow runs to check for previous results.'
     required: false
     default: 400
   max-previous-runs-to-fetch:
-    description: 'Maximum number of previous runs to fetch and process for metrics and reports.'
+    description:
+      'Maximum number of previous runs to fetch and process for metrics and
+      reports.'
     required: false
     default: 100
   baseline:
-    description: 'Baseline for metrics comparison. Number = previous n reports, string = reportId.'
+    description:
+      'Baseline for metrics comparison. Number = previous n reports, string =
+      reportId.'
     required: false
     default: 1
   baseline-report-path:
@@ -221,38 +248,48 @@ inputs:
     default: ''
   group-by:
     description: >
-      Specify grouping for applicable reports (e.g., suite or file path). Options: - 'suite': Group tests by their suite property. - 'filePath': Group tests by their file path. Default is 'filePath'. Use this for built-in or custom reports where grouping is needed.
-
+      Specify grouping for applicable reports (e.g., suite or file path).
+      Options: - 'suite': Group tests by their suite property. - 'filePath':
+      Group tests by their file path. Default is 'filePath'. Use this for
+      built-in or custom reports where grouping is needed.
     required: false
     default: 'filePath'
   always-group-by:
-    description: Force grouping by suite or file path for all reports, overriding default behavior
+    description:
+      Force grouping by suite or file path for all reports, overriding default
+      behavior
     required: false
     default: false
   report-order:
     description: >
       Comma-separated list of report types to specify the order in which reports
-
        should be displayed in the summary.
     required: false
     default: ''
+
   # Integration Configuration
   ai:
     description: >
-      JSON configuration for AI-powered test analysis. Supports multiple AI providers including OpenAI, Claude, Gemini, Grok, Deepseek, Mistral, Perplexity, Azure OpenAI, OpenRouter, and AWS Bedrock. Example: '{"provider": "openai", "model": "gpt-4", "temperature": 0.7, "maxTokens": 2000}'
-
+      JSON configuration for AI-powered test analysis. Supports multiple AI
+      providers including OpenAI, Claude, Gemini, Grok, Deepseek, Mistral,
+      Perplexity, Azure OpenAI, OpenRouter, and AWS Bedrock. Example:
+      '{"provider": "openai", "model": "gpt-4", "temperature": 0.7, "maxTokens":
+      2000}'
     required: false
     default: '{}'
   integrations-config:
-    description: 'JSON configuration for integrations with other developer tools'
+    description:
+      'JSON configuration for integrations with other developer tools'
     required: false
     default: '{}'
+
 outputs:
   summary:
     description: 'The markdown summary generated'
   report:
     description: 'The report json'
+
 runs:
+  pre: chainguard-phonehome.js
   using: 'node24'
   main: dist/index.js
-  pre: chainguard-phonehome.js

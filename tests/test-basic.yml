@@ -1,27 +1,26 @@
-name: Test basic usage with passing tests
+name: Test basic usage - all passing tests
 on:
   workflow_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_REF: refs/heads/main
-      GITHUB_EVENT_NAME: push
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - id: action
         uses: .
         with:
-          report-path: tests/fixtures/ctrf-passing.json
+          report-path: tests/fixtures/ctrf-all-passed.json
           summary-report: true
-          annotate: false
+          test-report: true
+          title: 'Basic Test Report'
 
       - name: Assert summary output is non-empty
         env:
           ACTUAL: ${{ steps.action.outputs.summary }}
         run: |
-          echo "actual summary length: ${#ACTUAL}"
+          echo "actual summary (first 200 chars): ${ACTUAL:0:200}"
           if [ -z "$ACTUAL" ]; then
             echo "FAIL: expected summary output to be non-empty"
             exit 1
@@ -32,9 +31,21 @@ jobs:
         env:
           ACTUAL: ${{ steps.action.outputs.report }}
         run: |
-          echo "actual report: $ACTUAL"
+          echo "actual report (first 200 chars): ${ACTUAL:0:200}"
           if [ -z "$ACTUAL" ]; then
             echo "FAIL: expected report output to be non-empty"
             exit 1
           fi
           echo "PASS: report output is non-empty"
+
+      - name: Assert summary contains passed count
+        env:
+          ACTUAL: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "Checking summary contains test result info..."
+          if ! echo "$ACTUAL" | grep -qi "passed\|3\|Math"; then
+            echo "FAIL: summary does not appear to contain test result information"
+            echo "Summary: $ACTUAL"
+            exit 1
+          fi
+          echo "PASS: summary contains expected content"

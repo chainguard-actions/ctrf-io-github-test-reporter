@@ -1,0 +1,58 @@
+name: Test failed tests report
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-with-failures.json
+          summary-report: true
+          failed-report: true
+          title: 'Failed Tests Report'
+          # Do NOT exit-on-fail so the step succeeds and we can assert outputs
+          exit-on-fail: false
+
+      - name: Assert summary output is non-empty
+        env:
+          ACTUAL: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "actual summary (first 300 chars): ${ACTUAL:0:300}"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert report output contains failed test info
+        env:
+          ACTUAL: ${{ steps.action.outputs.report }}
+        run: |
+          echo "actual report (first 300 chars): ${ACTUAL:0:300}"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          # The report JSON should contain failed count
+          if ! echo "$ACTUAL" | grep -q '"failed"'; then
+            echo "FAIL: report does not contain failed field"
+            exit 1
+          fi
+          echo "PASS: report contains failed field"
+
+      - name: Assert summary mentions failed tests
+        env:
+          ACTUAL: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "Checking summary mentions failures..."
+          if ! echo "$ACTUAL" | grep -qi "fail\|2"; then
+            echo "FAIL: summary does not appear to mention failed tests"
+            echo "Summary: $ACTUAL"
+            exit 1
+          fi
+          echo "PASS: summary mentions failed tests"

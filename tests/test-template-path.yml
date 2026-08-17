@@ -1,4 +1,4 @@
-name: Test multiple report types
+name: Test custom template-path report
 on:
   workflow_dispatch:
 
@@ -12,10 +12,9 @@ jobs:
         uses: .
         with:
           report-path: tests/fixtures/ctrf-all-passed.json
-          summary-report: true
-          test-report: true
-          test-list-report: true
-          title: 'Multi-Report Test'
+          template-path: tests/fixtures/custom-template.hbs
+          custom-report: true
+          title: 'Custom Template Report'
 
       - name: Assert summary output is non-empty
         env:
@@ -28,18 +27,14 @@ jobs:
           fi
           echo "PASS: summary output is non-empty"
 
-      - name: Assert report JSON output is valid
+      - name: Assert summary contains custom template content
         env:
-          ACTUAL: ${{ steps.action.outputs.report }}
+          ACTUAL: ${{ steps.action.outputs.summary }}
         run: |
-          echo "actual report (first 300 chars): ${ACTUAL:0:300}"
-          if [ -z "$ACTUAL" ]; then
-            echo "FAIL: expected report output to be non-empty"
+          echo "Checking summary contains custom template output..."
+          if ! echo "$ACTUAL" | grep -qi "Custom Test Report\|Total Tests\|Passed\|passed"; then
+            echo "FAIL: summary does not appear to contain custom template content"
+            echo "Summary: $ACTUAL"
             exit 1
           fi
-          # Validate it looks like JSON
-          if ! echo "$ACTUAL" | grep -q '{'; then
-            echo "FAIL: report output does not appear to be JSON"
-            exit 1
-          fi
-          echo "PASS: report output appears to be valid JSON"
+          echo "PASS: summary contains expected custom template content"

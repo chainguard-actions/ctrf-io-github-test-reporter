@@ -1,4 +1,4 @@
-name: Test multiple report types
+name: Test skipped tests report
 on:
   workflow_dispatch:
 
@@ -11,11 +11,10 @@ jobs:
       - id: action
         uses: .
         with:
-          report-path: tests/fixtures/ctrf-all-passed.json
+          report-path: tests/fixtures/ctrf-with-skipped.json
           summary-report: true
-          test-report: true
-          test-list-report: true
-          title: 'Multi-Report Test'
+          skipped-report: true
+          title: 'Skipped Tests Report'
 
       - name: Assert summary output is non-empty
         env:
@@ -28,7 +27,19 @@ jobs:
           fi
           echo "PASS: summary output is non-empty"
 
-      - name: Assert report JSON output is valid
+      - name: Assert summary mentions skipped tests
+        env:
+          ACTUAL: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "Checking summary mentions skipped tests..."
+          if ! echo "$ACTUAL" | grep -qi "skip\|2"; then
+            echo "FAIL: summary does not appear to mention skipped tests"
+            echo "Summary: $ACTUAL"
+            exit 1
+          fi
+          echo "PASS: summary mentions skipped tests"
+
+      - name: Assert report output contains skipped count
         env:
           ACTUAL: ${{ steps.action.outputs.report }}
         run: |
@@ -37,9 +48,8 @@ jobs:
             echo "FAIL: expected report output to be non-empty"
             exit 1
           fi
-          # Validate it looks like JSON
-          if ! echo "$ACTUAL" | grep -q '{'; then
-            echo "FAIL: report output does not appear to be JSON"
+          if ! echo "$ACTUAL" | grep -q '"skipped"'; then
+            echo "FAIL: report does not contain skipped field"
             exit 1
           fi
-          echo "PASS: report output appears to be valid JSON"
+          echo "PASS: report contains skipped field"

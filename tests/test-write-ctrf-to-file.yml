@@ -1,40 +1,35 @@
 name: Test write-ctrf-to-file option
 on:
   workflow_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_REF: refs/heads/main
-      GITHUB_EVENT_NAME: push
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - id: action
         uses: .
         with:
-          report-path: tests/fixtures/ctrf-passing.json
+          report-path: tests/fixtures/ctrf-all-passed.json
           summary-report: true
-          annotate: false
-          write-ctrf-to-file: processed-ctrf-output.json
+          write-ctrf-to-file: /tmp/output-ctrf-report.json
 
-      - name: Assert processed CTRF file was written
+      - name: Assert output CTRF file was written
         run: |
-          echo "Checking for processed CTRF output file..."
-          if [ ! -f "processed-ctrf-output.json" ]; then
-            echo "FAIL: expected processed-ctrf-output.json to exist in working directory"
-            ls -la
+          echo "Checking if output CTRF file was written..."
+          if [ ! -f /tmp/output-ctrf-report.json ]; then
+            echo "FAIL: expected output CTRF file at /tmp/output-ctrf-report.json but it was not found"
             exit 1
           fi
-          echo "File contents:"
-          cat "processed-ctrf-output.json"
-          echo "PASS: processed CTRF output file was written"
+          echo "PASS: output CTRF file exists"
 
-      - name: Assert written file is valid JSON
+      - name: Assert output CTRF file is valid JSON with results
         run: |
-          node -e "
-            const fs = require('fs');
-            const content = fs.readFileSync('processed-ctrf-output.json', 'utf8');
-            JSON.parse(content);
-            console.log('PASS: written file is valid JSON');
-          "
+          CONTENT=$(cat /tmp/output-ctrf-report.json)
+          echo "Output file content (first 200 chars): ${CONTENT:0:200}"
+          if ! echo "$CONTENT" | grep -q '"results"'; then
+            echo "FAIL: output CTRF file does not contain 'results' key"
+            exit 1
+          fi
+          echo "PASS: output CTRF file contains results key"

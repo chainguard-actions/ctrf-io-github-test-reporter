@@ -1,0 +1,59 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 4,
+      "passed": 2,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 2,
+      "other": 0,
+      "start": 1700000000000,
+      "stop": 1700000005000
+    },
+    "tests": [
+      {
+        "name": "should add two numbers",
+        "duration": 10,
+        "status": "passed",
+        "rawStatus": "passed",
+        "suite": "Math Tests",
+        "filePath": "/src/math.test.js",
+        "retries": 0,
+        "flaky": false
+      },
+      {
+        "name": "should subtract two numbers",
+        "duration": 5,
+        "status": "passed",
+        "rawStatus": "passed",
+        "suite": "Math Tests",
+        "filePath": "/src/math.test.js",
+        "retries": 0,
+        "flaky": false
+      },
+      {
+        "name": "should multiply two numbers",
+        "duration": 0,
+        "status": "skipped",
+        "rawStatus": "skipped",
+        "suite": "Math Tests",
+        "filePath": "/src/math.test.js",
+        "retries": 0,
+        "flaky": false
+      },
+      {
+        "name": "should divide two numbers",
+        "duration": 0,
+        "status": "skipped",
+        "rawStatus": "skipped",
+        "suite": "Math Tests",
+        "filePath": "/src/math.test.js",
+        "retries": 0,
+        "flaky": false
+      }
+    ]
+  }
+}
