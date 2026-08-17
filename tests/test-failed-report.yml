@@ -1,0 +1,42 @@
+name: Test failed tests report
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy fixture CTRF report with failures to workspace
+        run: |
+          cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-failed.json" "$GITHUB_WORKSPACE/ctrf-failed.json"
+
+      - id: action
+        uses: .
+        with:
+          report-path: ctrf-failed.json
+          failed-report: true
+          summary: true
+          annotate: false
+
+      - name: Assert summary output contains failed test info
+        env:
+          ACTUAL: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "actual summary (first 500 chars): ${ACTUAL:0:500}"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert report output is non-empty
+        env:
+          ACTUAL: ${{ steps.action.outputs.report }}
+        run: |
+          echo "actual report (first 200 chars): ${ACTUAL:0:200}"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: report output is non-empty"

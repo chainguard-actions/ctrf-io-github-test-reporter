@@ -1,0 +1,49 @@
+name: Test write-ctrf-to-file option
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy fixture CTRF report to workspace
+        run: |
+          cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-passed.json" "$GITHUB_WORKSPACE/ctrf-passed.json"
+
+      - id: action
+        uses: .
+        with:
+          report-path: ctrf-passed.json
+          summary-report: true
+          summary: true
+          annotate: false
+          write-ctrf-to-file: ctrf-output.json
+
+      - name: Assert output file was created
+        run: |
+          echo "Checking for output file: $GITHUB_WORKSPACE/ctrf-output.json"
+          if [ ! -f "$GITHUB_WORKSPACE/ctrf-output.json" ]; then
+            echo "FAIL: expected output file ctrf-output.json to be created"
+            exit 1
+          fi
+          echo "PASS: output file ctrf-output.json was created"
+
+      - name: Assert output file is valid JSON
+        run: |
+          if ! python3 -c "import json, sys; json.load(open('$GITHUB_WORKSPACE/ctrf-output.json'))" 2>/dev/null; then
+            echo "FAIL: output file is not valid JSON"
+            exit 1
+          fi
+          echo "PASS: output file is valid JSON"
+
+      - name: Assert summary output is non-empty
+        env:
+          ACTUAL: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "actual summary (first 200 chars): ${ACTUAL:0:200}"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"

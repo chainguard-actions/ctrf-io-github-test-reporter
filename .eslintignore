@@ -1,0 +1,8 @@
+lib/
+dist/
+node_modules/
+coverage/
+templates/
+scripts/
+.tools/
+*.test.ts

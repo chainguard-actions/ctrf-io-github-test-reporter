@@ -1,0 +1,102 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 10,
+      "passed": 5,
+      "failed": 2,
+      "pending": 1,
+      "skipped": 1,
+      "other": 1,
+      "start": 1722511783500,
+      "stop": 1722519283500
+    },
+    "tests": [
+      {
+        "name": "should be able to login",
+        "status": "passed",
+        "duration": 1200,
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > login"
+      },
+      {
+        "name": "should display title",
+        "status": "failed",
+        "duration": 800,
+        "message": "\u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nLocator: locator(':root')\nExpected pattern: \u001b[32m/Playwrc cight/\u001b[39m\nReceived string:  \u001b[31m\"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[39m\nCall log:\n  \u001b[2m- expect.toHaveTitle with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator(':root')\u001b[22m\n\u001b[2m  -   locator resolved to <html lang=\"en\" dir=\"ltr\" data-theme=\"light\" data-has-…>…</html>\u001b[22m\n\u001b[2m  -   unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n",
+        "trace": "ProfileTest.js:45",
+        "ai": "The test failed because the expected page title did not match the actual title within the specified 5000ms timeout. The test was looking for a title matching the pattern '/Playwrc cight/', but received 'Fast and reliable end-to-end testing for modern web apps | Playwright' instead. \n\nTo resolve this, you should verify if the page title in your application is correct. There might be a typo in the expected title pattern in your test, which should be corrected to match the actual title. Alternatively, if the page takes longer to load, consider increasing the timeout duration in your test to allow more time for the title to appear.",
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > profile"
+      },
+      {
+        "name": "should be able to update profile",
+        "status": "passed",
+        "duration": 1200,
+        "flaky": true,
+        "retries": 2,
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > profile"
+      },
+      {
+        "name": "should be able to logout",
+        "status": "skipped",
+        "duration": 0,
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > login"
+      },
+      {
+        "name": "should validate user settings",
+        "status": "passed",
+        "duration": 1100,
+        "filePath": "tests/settings.test.ts",
+        "suite": "settings.test.ts > settings"
+      },
+      {
+        "name": "should fail to update profile on network failure",
+        "status": "failed",
+        "duration": 900,
+        "message": "Network Timeout",
+        "trace": "ProfileUpdateTest.js:60",
+        "filePath": "tests/network.test.ts",
+        "suite": "network.test.ts > network",
+        "ai": "The test failed because of a \"Network Timeout\" error, as indicated in the error message. The stack trace points to line 60 in the file ProfileUpdateTest.js. This suggests that the test was designed to simulate a network failure during a profile update, but it actually encountered a real network timeout. To resolve this issue, you should check the network configuration in your test environment to ensure it's correctly set up to simulate the desired network conditions. Also, verify that the timeout settings in your test code are appropriate for the expected network behavior."
+      },
+      {
+        "name": "should load user data",
+        "status": "pending",
+        "duration": 0
+      },
+      {
+        "name": "should handle session timeouts",
+        "status": "passed",
+        "duration": 950,
+        "flaky": true,
+        "retries": 1,
+        "filePath": "tests/network.test.ts",
+        "suite": "network.test.ts > network"
+      },
+      {
+        "name": "should clean up user session on logout",
+        "status": "other",
+        "duration": 1050,
+        "filePath": "tests/network.test.ts",
+        "suite": "network.test.ts > network"
+      },
+      {
+        "name": "should allow user to change password",
+        "status": "passed",
+        "duration": 1300,
+        "flaky": true,
+        "retries": 3,
+        "filePath": "tests/network.test.ts",
+        "suite": "network.test.ts > network"
+      }
+    ],
+    "extra": {
+      "ai": "The test suite experienced failures due to issues related to timing and network configuration. The first test failed because the expected page title did not match the actual title within the specified timeout, suggesting a potential mismatch in the expected title pattern or insufficient timeout duration. The second test encountered a real network timeout instead of the simulated failure it was designed to test, indicating problems with the network setup or timeout settings in the test environment. These failures point to a need for reviewing and adjusting both the expected outcomes and the test environment configurations to better align with actual application behavior and network conditions."
+    }
+  }
+}

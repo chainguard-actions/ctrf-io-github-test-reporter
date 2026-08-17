@@ -1,0 +1,51 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 4,
+      "passed": 2,
+      "failed": 2,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1722511783500,
+      "stop": 1722511784500
+    },
+    "tests": [
+      {
+        "name": "should login successfully",
+        "status": "passed",
+        "duration": 100,
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > login"
+      },
+      {
+        "name": "should display title",
+        "status": "failed",
+        "duration": 800,
+        "message": "Expected title to be 'Home' but got 'Error'",
+        "trace": "login.test.ts:20",
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > login"
+      },
+      {
+        "name": "should validate user settings",
+        "status": "passed",
+        "duration": 110,
+        "filePath": "tests/settings.test.ts",
+        "suite": "settings.test.ts > settings"
+      },
+      {
+        "name": "should fail on network error",
+        "status": "failed",
+        "duration": 900,
+        "message": "Network Timeout",
+        "trace": "network.test.ts:60",
+        "filePath": "tests/network.test.ts",
+        "suite": "network.test.ts > network"
+      }
+    ]
+  }
+}

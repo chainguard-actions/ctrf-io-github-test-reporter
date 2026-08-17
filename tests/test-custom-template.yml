@@ -1,0 +1,77 @@
+name: Test custom Handlebars template via template-path
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+      GITHUB_REPOSITORY: test-owner/test-repo
+      GITHUB_REPOSITORY_OWNER: test-owner
+      GITHUB_REF_NAME: main
+      GITHUB_SHA: abc1234567890abcdef1234567890abcdef12345
+      GITHUB_RUN_ID: "1"
+      GITHUB_RUN_NUMBER: "1"
+      GITHUB_WORKFLOW: test-workflow
+      GITHUB_JOB: test
+      GITHUB_SERVER_URL: https://github.com
+      GITHUB_API_URL: https://api.github.com
+      GITHUB_GRAPHQL_URL: https://api.github.com/graphql
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create CTRF fixture file
+        run: |
+          mkdir -p /tmp/ctrf-test
+          cat > /tmp/ctrf-test/ctrf-template.json << 'EOF'
+          {
+            "results": {
+              "tool": { "name": "jest" },
+              "summary": {
+                "tests": 2,
+                "passed": 2,
+                "failed": 0,
+                "pending": 0,
+                "skipped": 0,
+                "other": 0,
+                "start": 1700000000000,
+                "stop": 1700000003000
+              },
+              "tests": [
+                { "name": "should render template", "status": "passed", "duration": 10 },
+                { "name": "should apply custom format", "status": "passed", "duration": 12 }
+              ]
+            }
+          }
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          report-path: /tmp/ctrf-test/ctrf-template.json
+          template-path: ${{ github.workspace }}/actions/hardened/ctrf-io--github-test-reporter/v1.0.24/tests/fixtures/custom-template.hbs
+          custom-report: true
+          annotate: false
+
+      - name: Assert summary output is non-empty
+        env:
+          ACTUAL: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "actual summary length: ${#ACTUAL}"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected summary output to be non-empty when using template-path"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty with custom template"
+
+      - name: Assert report output is non-empty
+        env:
+          ACTUAL: ${{ steps.action.outputs.report }}
+        run: |
+          echo "actual report: $ACTUAL"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: report output is non-empty"

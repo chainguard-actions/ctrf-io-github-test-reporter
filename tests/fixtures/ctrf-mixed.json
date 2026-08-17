@@ -1,0 +1,58 @@
+{
+  "results": {
+    "tool": {
+      "name": "playwright"
+    },
+    "summary": {
+      "tests": 5,
+      "passed": 2,
+      "failed": 1,
+      "pending": 0,
+      "skipped": 1,
+      "other": 1,
+      "start": 1722511783500,
+      "stop": 1722511785000
+    },
+    "tests": [
+      {
+        "name": "should login successfully",
+        "status": "passed",
+        "duration": 100,
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > login"
+      },
+      {
+        "name": "should display title",
+        "status": "failed",
+        "duration": 800,
+        "message": "Expected title to be 'Home' but got 'Error'",
+        "trace": "login.test.ts:20",
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > login"
+      },
+      {
+        "name": "should be able to update profile",
+        "status": "passed",
+        "duration": 1200,
+        "flaky": true,
+        "retries": 2,
+        "filePath": "tests/profile.test.ts",
+        "suite": "profile.test.ts > profile"
+      },
+      {
+        "name": "should be able to logout",
+        "status": "skipped",
+        "duration": 0,
+        "filePath": "tests/login.test.ts",
+        "suite": "login.test.ts > login"
+      },
+      {
+        "name": "should clean up session",
+        "status": "other",
+        "duration": 50,
+        "filePath": "tests/session.test.ts",
+        "suite": "session.test.ts > session"
+      }
+    ]
+  }
+}
