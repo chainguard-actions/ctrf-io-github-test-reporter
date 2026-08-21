@@ -1,0 +1,39 @@
+name: Test custom template-path input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-passing.json
+          template-path: tests/fixtures/custom-template.hbs
+          custom-report: true
+          title: 'Custom Template Report'
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary length: ${#SUMMARY}"
+          echo "summary (first 300 chars): ${SUMMARY:0:300}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty when using template-path"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert report output is non-empty
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report (first 200 chars): ${REPORT:0:200}"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: report output is non-empty"

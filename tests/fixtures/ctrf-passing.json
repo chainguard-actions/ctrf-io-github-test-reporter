@@ -1,0 +1,40 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1722511783500,
+      "stop": 1722511784500
+    },
+    "tests": [
+      {
+        "name": "should login successfully",
+        "status": "passed",
+        "duration": 120,
+        "filePath": "tests/auth.test.ts",
+        "suite": "auth.test.ts > login"
+      },
+      {
+        "name": "should display dashboard",
+        "status": "passed",
+        "duration": 80,
+        "filePath": "tests/dashboard.test.ts",
+        "suite": "dashboard.test.ts > dashboard"
+      },
+      {
+        "name": "should logout successfully",
+        "status": "passed",
+        "duration": 60,
+        "filePath": "tests/auth.test.ts",
+        "suite": "auth.test.ts > login"
+      }
+    ]
+  }
+}

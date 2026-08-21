@@ -1,0 +1,43 @@
+name: Test flaky tests report
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-flaky.json
+          flaky-report: true
+          flaky-rate-report: true
+          summary-report: true
+          title: 'Flaky Tests Report'
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 300 chars): ${SUMMARY:0:300}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert report contains flaky test info
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report (first 300 chars): ${REPORT:0:300}"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          if ! echo "$REPORT" | grep -q "flaky"; then
+            echo "FAIL: report does not contain 'flaky' information"
+            exit 1
+          fi
+          echo "PASS: report contains flaky test information"

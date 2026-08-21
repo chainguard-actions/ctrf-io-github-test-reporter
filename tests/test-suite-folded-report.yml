@@ -1,0 +1,39 @@
+name: Test suite-folded-report output
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-passing.json
+          suite-folded-report: true
+          suite-list-report: true
+          title: 'Suite Report'
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 300 chars): ${SUMMARY:0:300}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert summary contains suite names
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "Checking summary contains suite names..."
+          # The fixture has suites like "auth.test.ts > login" and "dashboard.test.ts > dashboard"
+          if ! echo "$SUMMARY" | grep -qi "auth\|dashboard\|login"; then
+            echo "FAIL: summary does not contain expected suite names"
+            exit 1
+          fi
+          echo "PASS: summary contains suite names"

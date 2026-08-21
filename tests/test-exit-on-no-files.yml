@@ -1,0 +1,31 @@
+name: Test exit-on-no-files behavior
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run action with exit-on-no-files and non-existent path
+        id: action
+        uses: .
+        continue-on-error: true
+        with:
+          report-path: tests/fixtures/non-existent-report-*.json
+          exit-on-no-files: true
+
+      - name: Assert action failed due to no files found
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action correctly exited with failure when no files found and exit-on-no-files=true"
+          elif [ "$OUTCOME" = "success" ]; then
+            echo "FAIL: action should have exited with failure but succeeded"
+            exit 1
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

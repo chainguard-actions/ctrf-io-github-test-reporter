@@ -1,0 +1,47 @@
+name: Test write-ctrf-to-file output
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-passing.json
+          summary-report: true
+          write-ctrf-to-file: /tmp/processed-ctrf-output.json
+
+      - name: Assert processed CTRF file was written
+        run: |
+          echo "Checking if processed CTRF file was written..."
+          if [ ! -f "/tmp/processed-ctrf-output.json" ]; then
+            echo "FAIL: expected processed CTRF file at /tmp/processed-ctrf-output.json"
+            exit 1
+          fi
+          echo "File exists. Contents (first 200 chars):"
+          head -c 200 /tmp/processed-ctrf-output.json
+          echo ""
+          echo "PASS: processed CTRF file was written"
+
+      - name: Assert processed CTRF file contains valid JSON
+        run: |
+          echo "Validating JSON content of processed CTRF file..."
+          if ! python3 -c "import json, sys; json.load(open('/tmp/processed-ctrf-output.json'))" 2>/dev/null; then
+            echo "FAIL: processed CTRF file does not contain valid JSON"
+            exit 1
+          fi
+          echo "PASS: processed CTRF file contains valid JSON"
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 200 chars): ${SUMMARY:0:200}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"

@@ -1,0 +1,37 @@
+name: Test test-list-report output
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-passing.json
+          test-list-report: true
+          title: 'Test List Report'
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 300 chars): ${SUMMARY:0:300}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert summary contains test names
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "Checking summary contains test names from fixture..."
+          if ! echo "$SUMMARY" | grep -qi "login\|dashboard\|logout"; then
+            echo "FAIL: summary does not contain expected test names"
+            exit 1
+          fi
+          echo "PASS: summary contains test names"

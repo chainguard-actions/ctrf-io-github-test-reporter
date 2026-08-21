@@ -1,0 +1,18 @@
+{{#if (getCollapseLargeReports)}}
+<details>
+<summary><strong>View All Tests</strong></summary>
+
+| **Test Name** | **Status** | **Flaky** | **Duration** |
+| --- | --- | --- | --- |
+{{#slice ctrf.tests 0 8000}}
+| {{name}} | {{getCtrfEmoji status}} | {{#if flaky}}{{getCtrfEmoji "flaky"}}{{/if}} | {{formatDuration duration}} |
+{{/slice}}
+
+</details>
+{{else}}
+| **Test Name** | **Status** | **Flaky** | **Duration** |
+| --- | --- | --- | --- |
+{{#slice ctrf.tests 0 8000}}
+| {{name}} | {{getCtrfEmoji status}} | {{#if flaky}}{{getCtrfEmoji "flaky"}}{{/if}} | {{formatDuration duration}} |
+{{/slice}}
+{{/if}}

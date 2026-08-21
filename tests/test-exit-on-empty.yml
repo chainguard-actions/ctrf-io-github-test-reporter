@@ -1,0 +1,52 @@
+name: Test exit-on-empty behavior
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create CTRF report with zero tests
+        run: |
+          cat > /tmp/ctrf-empty.json << 'EOF'
+          {
+            "results": {
+              "tool": { "name": "jest" },
+              "summary": {
+                "tests": 0,
+                "passed": 0,
+                "failed": 0,
+                "pending": 0,
+                "skipped": 0,
+                "other": 0,
+                "start": 1722511783500,
+                "stop": 1722511784500
+              },
+              "tests": []
+            }
+          }
+          EOF
+
+      - name: Run action with exit-on-empty and empty test report
+        id: action
+        uses: .
+        continue-on-error: true
+        with:
+          report-path: /tmp/ctrf-empty.json
+          exit-on-empty: true
+
+      - name: Assert action failed due to empty tests
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action correctly exited with failure when no tests found and exit-on-empty=true"
+          elif [ "$OUTCOME" = "success" ]; then
+            echo "FAIL: action should have exited with failure but succeeded"
+            exit 1
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

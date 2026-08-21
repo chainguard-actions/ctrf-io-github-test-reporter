@@ -1,0 +1,88 @@
+name: Test skipped tests report
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create CTRF report with skipped tests
+        run: |
+          cat > /tmp/ctrf-skipped.json << 'EOF'
+          {
+            "results": {
+              "tool": { "name": "jest" },
+              "summary": {
+                "tests": 4,
+                "passed": 2,
+                "failed": 0,
+                "pending": 0,
+                "skipped": 2,
+                "other": 0,
+                "start": 1722511783500,
+                "stop": 1722511784500
+              },
+              "tests": [
+                {
+                  "name": "should login successfully",
+                  "status": "passed",
+                  "duration": 120,
+                  "filePath": "tests/auth.test.ts",
+                  "suite": "auth.test.ts > login"
+                },
+                {
+                  "name": "should display dashboard",
+                  "status": "passed",
+                  "duration": 80,
+                  "filePath": "tests/dashboard.test.ts",
+                  "suite": "dashboard.test.ts > dashboard"
+                },
+                {
+                  "name": "should logout",
+                  "status": "skipped",
+                  "duration": 0,
+                  "filePath": "tests/auth.test.ts",
+                  "suite": "auth.test.ts > login"
+                },
+                {
+                  "name": "should handle session",
+                  "status": "skipped",
+                  "duration": 0,
+                  "filePath": "tests/session.test.ts",
+                  "suite": "session.test.ts > session"
+                }
+              ]
+            }
+          }
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          report-path: /tmp/ctrf-skipped.json
+          skipped-report: true
+          summary-report: true
+          title: 'Skipped Tests Report'
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 300 chars): ${SUMMARY:0:300}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert summary contains skipped count
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "Checking summary contains skipped test count..."
+          if ! echo "$SUMMARY" | grep -q "2"; then
+            echo "FAIL: summary does not contain expected skipped count (2)"
+            exit 1
+          fi
+          echo "PASS: summary contains skipped count"
