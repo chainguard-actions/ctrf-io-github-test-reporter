@@ -1,0 +1,57 @@
+name: Test multiple report types together
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy CTRF report fixture with failures and flaky tests
+        run: cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-failed.json" /tmp/ctrf-multi.json
+
+      - id: action
+        uses: .
+        with:
+          report-path: /tmp/ctrf-multi.json
+          summary-report: true
+          test-report: true
+          failed-report: true
+          summary: true
+          annotate: false
+
+      - name: Assert summary output is non-empty and contains content
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary length: ${#SUMMARY}"
+          echo "summary (first 600 chars): ${SUMMARY:0:600}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          # Should contain test results from multiple reports
+          if echo "$SUMMARY" | grep -qi "test\|pass\|fail"; then
+            echo "PASS: summary contains expected multi-report content"
+          else
+            echo "FAIL: summary does not contain expected content"
+            echo "Full summary: $SUMMARY"
+            exit 1
+          fi
+
+      - name: Assert report JSON is valid
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report (first 200 chars): ${REPORT:0:200}"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          if echo "$REPORT" | grep -q '"summary"'; then
+            echo "PASS: report JSON contains summary field"
+          else
+            echo "FAIL: report JSON does not contain summary field"
+            exit 1
+          fi

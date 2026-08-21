@@ -1,0 +1,83 @@
+name: Test glob pattern for report-path
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create multiple CTRF report files
+        run: |
+          mkdir -p /tmp/ctrf-reports
+          cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-passed.json" /tmp/ctrf-reports/report-1.json
+          # Create a second report
+          cat > /tmp/ctrf-reports/report-2.json << 'EOF'
+          {
+            "results": {
+              "tool": { "name": "vitest" },
+              "summary": {
+                "tests": 2,
+                "passed": 2,
+                "failed": 0,
+                "pending": 0,
+                "skipped": 0,
+                "other": 0,
+                "start": 1722511783500,
+                "stop": 1722511784000
+              },
+              "tests": [
+                {
+                  "name": "should render component",
+                  "status": "passed",
+                  "duration": 50,
+                  "filePath": "tests/component.test.ts",
+                  "suite": "component.test.ts > render"
+                },
+                {
+                  "name": "should handle click",
+                  "status": "passed",
+                  "duration": 30,
+                  "filePath": "tests/component.test.ts",
+                  "suite": "component.test.ts > events"
+                }
+              ]
+            }
+          }
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          report-path: /tmp/ctrf-reports/*.json
+          summary-report: true
+          summary: true
+          annotate: false
+
+      - name: Assert summary output is non-empty (multiple files processed)
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 500 chars): ${SUMMARY:0:500}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty when using glob pattern"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty with glob pattern"
+
+      - name: Assert report JSON contains merged results
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report (first 300 chars): ${REPORT:0:300}"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          if echo "$REPORT" | grep -q '"tests"'; then
+            echo "PASS: report JSON contains tests field"
+          else
+            echo "FAIL: report JSON does not contain tests field"
+            exit 1
+          fi

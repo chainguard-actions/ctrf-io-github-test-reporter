@@ -1,0 +1,38 @@
+name: Test flaky-report with flaky tests
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy CTRF report fixture with flaky tests
+        run: cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-flaky.json" /tmp/ctrf-flaky.json
+
+      - id: action
+        uses: .
+        with:
+          report-path: /tmp/ctrf-flaky.json
+          flaky-report: true
+          summary: true
+          annotate: false
+
+      - name: Assert summary output contains flaky test information
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 500 chars): ${SUMMARY:0:500}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          # The flaky report should mention flaky tests
+          if echo "$SUMMARY" | grep -qi "flaky\|retry\|retries\|session\|profile"; then
+            echo "PASS: summary contains expected flaky test content"
+          else
+            echo "FAIL: summary does not contain expected flaky test content"
+            echo "Full summary: $SUMMARY"
+            exit 1
+          fi

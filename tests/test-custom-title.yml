@@ -1,0 +1,38 @@
+name: Test custom title in report
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy CTRF report fixture
+        run: cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-passed.json" /tmp/ctrf-passed.json
+
+      - id: action
+        uses: .
+        with:
+          report-path: /tmp/ctrf-passed.json
+          summary-report: true
+          title: 'My Custom Test Report Title'
+          summary: true
+          annotate: false
+
+      - name: Assert summary output contains custom title
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 500 chars): ${SUMMARY:0:500}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          if echo "$SUMMARY" | grep -q "My Custom Test Report Title"; then
+            echo "PASS: summary contains the custom title"
+          else
+            echo "FAIL: summary does not contain the custom title 'My Custom Test Report Title'"
+            echo "Full summary: $SUMMARY"
+            exit 1
+          fi

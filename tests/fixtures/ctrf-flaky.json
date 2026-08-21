@@ -1,0 +1,51 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1722511783500,
+      "stop": 1722511785000
+    },
+    "tests": [
+      {
+        "name": "should login successfully",
+        "status": "passed",
+        "duration": 120,
+        "filePath": "tests/auth.test.ts",
+        "suite": "auth.test.ts > login"
+      },
+      {
+        "name": "should handle session timeouts",
+        "status": "passed",
+        "duration": 950,
+        "flaky": true,
+        "retries": 1,
+        "filePath": "tests/network.test.ts",
+        "suite": "network.test.ts > network"
+      },
+      {
+        "name": "should update profile",
+        "status": "passed",
+        "duration": 1200,
+        "flaky": true,
+        "retries": 2,
+        "filePath": "tests/profile.test.ts",
+        "suite": "profile.test.ts > profile"
+      },
+      {
+        "name": "should validate settings",
+        "status": "passed",
+        "duration": 300,
+        "filePath": "tests/settings.test.ts",
+        "suite": "settings.test.ts > settings"
+      }
+    ]
+  }
+}

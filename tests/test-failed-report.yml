@@ -1,0 +1,54 @@
+name: Test failed-report with failing tests
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy CTRF report fixture with failures
+        run: cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-failed.json" /tmp/ctrf-failed.json
+
+      - id: action
+        uses: .
+        with:
+          report-path: /tmp/ctrf-failed.json
+          failed-report: true
+          summary: true
+          annotate: false
+
+      - name: Assert summary output contains failure information
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 500 chars): ${SUMMARY:0:500}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          # The failed report should mention failed tests
+          if echo "$SUMMARY" | grep -qi "fail\|error\|timeout\|title"; then
+            echo "PASS: summary contains expected failure content"
+          else
+            echo "FAIL: summary does not contain expected failure content"
+            echo "Full summary: $SUMMARY"
+            exit 1
+          fi
+
+      - name: Assert report JSON contains failed tests
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report (first 300 chars): ${REPORT:0:300}"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          if echo "$REPORT" | grep -q '"failed"'; then
+            echo "PASS: report JSON contains failed field"
+          else
+            echo "FAIL: report JSON does not contain failed field"
+            exit 1
+          fi

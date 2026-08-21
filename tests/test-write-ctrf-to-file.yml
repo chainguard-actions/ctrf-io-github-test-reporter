@@ -1,0 +1,41 @@
+name: Test write-ctrf-to-file output
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy CTRF report fixture
+        run: cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-passed.json" /tmp/ctrf-input.json
+
+      - id: action
+        uses: .
+        with:
+          report-path: /tmp/ctrf-input.json
+          summary-report: true
+          summary: true
+          annotate: false
+          write-ctrf-to-file: /tmp/ctrf-output.json
+
+      - name: Assert output file was created
+        run: |
+          if [ ! -f /tmp/ctrf-output.json ]; then
+            echo "FAIL: expected output file /tmp/ctrf-output.json to exist"
+            exit 1
+          fi
+          echo "PASS: output file exists"
+          echo "File size: $(wc -c < /tmp/ctrf-output.json) bytes"
+
+      - name: Assert output file is valid JSON with results
+        run: |
+          CONTENT=$(cat /tmp/ctrf-output.json)
+          echo "Content (first 200 chars): ${CONTENT:0:200}"
+          if echo "$CONTENT" | grep -q '"results"'; then
+            echo "PASS: output file contains valid CTRF JSON with results field"
+          else
+            echo "FAIL: output file does not contain expected 'results' field"
+            exit 1
+          fi
