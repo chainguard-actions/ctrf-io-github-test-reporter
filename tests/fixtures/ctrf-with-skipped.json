@@ -1,0 +1,47 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 4,
+      "passed": 2,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 2,
+      "other": 0,
+      "start": 1722511783500,
+      "stop": 1722511784500
+    },
+    "tests": [
+      {
+        "name": "should login successfully",
+        "status": "passed",
+        "duration": 120,
+        "filePath": "tests/auth.test.ts",
+        "suite": "auth.test.ts > login"
+      },
+      {
+        "name": "should display dashboard",
+        "status": "passed",
+        "duration": 200,
+        "filePath": "tests/dashboard.test.ts",
+        "suite": "dashboard.test.ts > dashboard"
+      },
+      {
+        "name": "should logout",
+        "status": "skipped",
+        "duration": 0,
+        "filePath": "tests/auth.test.ts",
+        "suite": "auth.test.ts > login"
+      },
+      {
+        "name": "should handle 2FA",
+        "status": "skipped",
+        "duration": 0,
+        "filePath": "tests/auth.test.ts",
+        "suite": "auth.test.ts > login"
+      }
+    ]
+  }
+}

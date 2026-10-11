@@ -1,0 +1,9 @@
+{{#if (filterOtherTests ctrf.tests)}}
+| **Tests** | **Status** |
+| --- | --- |
+{{#each (filterOtherTests ctrf.tests)}}
+|       {{name}} | {{status}} {{getCtrfEmoji status}} |
+{{/each}}
+{{else}}
+<p>No skipped tests ✨</p>
+{{/if}}

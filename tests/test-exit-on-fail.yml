@@ -1,0 +1,37 @@
+name: Test exit-on-fail behavior
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy fixture CTRF report with failures to workspace
+        run: |
+          cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-with-failures.json" "$GITHUB_WORKSPACE/ctrf-report.json"
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          report-path: ctrf-report.json
+          summary-report: true
+          exit-on-fail: true
+
+      - name: Assert action failed due to test failures
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "summary (first 200 chars): ${SUMMARY:0:200}"
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action correctly exited with failure because tests failed"
+          elif [ "$OUTCOME" = "success" ]; then
+            echo "FAIL: action should have failed due to exit-on-fail=true with failing tests"
+            exit 1
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

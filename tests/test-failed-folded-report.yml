@@ -1,0 +1,41 @@
+name: Test failed-folded-report with failing tests
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy fixture CTRF report with failures to workspace
+        run: |
+          cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-with-failures.json" "$GITHUB_WORKSPACE/ctrf-report.json"
+
+      - id: action
+        uses: .
+        with:
+          report-path: ctrf-report.json
+          failed-folded-report: true
+          title: 'Failed Folded Report'
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 500 chars): ${SUMMARY:0:500}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is present"
+
+      - name: Assert report output is non-empty
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report (first 200 chars): ${REPORT:0:200}"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: report output is present"

@@ -1,0 +1,7 @@
+| Test 📝 | Results 📊 | Duration (avg) ⏱️ | Duration (p95) ⏱️ |
+|-----------|-----------------|------------|----------|
+{{#each report.insights.extra.slowestTests}}
+{{#if averageTestDuration}}
+| {{name}} | {{totalResults}} | {{formatDurationFromTimes 0 averageTestDuration}} | {{formatDurationFromTimes 0 p95TestDuration}} |
+{{/if}}
+{{/each}}

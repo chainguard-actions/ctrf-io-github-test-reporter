@@ -1,0 +1,7 @@
+# Custom Test Report: {{summary.testsRegistered}} tests
+
+**Passed:** {{summary.testsPassed}} | **Failed:** {{summary.testsFailed}} | **Skipped:** {{summary.testsSkipped}}
+
+{{#each tests}}
+- {{name}}: {{status}}
+{{/each}}

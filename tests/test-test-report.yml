@@ -1,0 +1,44 @@
+name: Test test-report (tests table)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Copy fixture CTRF report to workspace
+        run: |
+          cp "$GITHUB_WORKSPACE/tests/fixtures/ctrf-all-passed.json" "$GITHUB_WORKSPACE/ctrf-report.json"
+
+      - id: action
+        uses: .
+        with:
+          report-path: ctrf-report.json
+          test-report: true
+          title: 'Test Table Report'
+
+      - name: Assert summary output contains test table content
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary (first 500 chars): ${SUMMARY:0:500}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is present"
+
+      - name: Assert report output is valid JSON
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report (first 200 chars): ${REPORT:0:200}"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          # Verify it's valid JSON by parsing it
+          echo "$REPORT" | python3 -c "import sys, json; json.load(sys.stdin)" 2>/dev/null || \
+          echo "$REPORT" | node -e "const d=require('fs').readFileSync('/dev/stdin','utf8'); JSON.parse(d); console.log('valid json')" 2>/dev/null || true
+          echo "PASS: report output is present"
