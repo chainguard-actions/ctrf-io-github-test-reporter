@@ -14,6 +14,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v1.2.0 | [`v1.2.0`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.2.0) | [`ab7aec6`](https://github.com/ctrf-io/github-test-reporter/commit/ab7aec6247c2fe9b2774ae15ea6f902aea1ee19c) |
 | v1.3.0 | [`v1.3.0`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.0) | [`7974087`](https://github.com/ctrf-io/github-test-reporter/commit/7974087018bf4857cf5a9d78723e152038c3fa31) |
 | v1.3.1 | [`v1.3.1`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.1) | [`78d9543`](https://github.com/ctrf-io/github-test-reporter/commit/78d95437583fad33c98174a2d2f74f789c048d4e) |
+| v1.3.2 | [`v1.3.2`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.2) | [`dbb0895`](https://github.com/ctrf-io/github-test-reporter/commit/dbb08957b5b2af918b39136ab2c5532002c7649b) |
 
 ## Privacy
 
