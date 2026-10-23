@@ -1,0 +1,44 @@
+name: Test write-ctrf-to-file option
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-report-passing.json
+          summary-report: true
+          summary: true
+          annotate: false
+          write-ctrf-to-file: /tmp/processed-ctrf-report.json
+
+      - name: Assert processed CTRF file was written
+        run: |
+          if [ ! -f /tmp/processed-ctrf-report.json ]; then
+            echo "FAIL: expected processed CTRF file to exist at /tmp/processed-ctrf-report.json"
+            exit 1
+          fi
+          echo "File contents:"
+          cat /tmp/processed-ctrf-report.json
+          # Verify it's valid JSON with expected structure
+          if grep -q '"results"' /tmp/processed-ctrf-report.json; then
+            echo "PASS: processed CTRF file exists and contains results"
+          else
+            echo "FAIL: processed CTRF file does not contain expected results structure"
+            exit 1
+          fi
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary: $SUMMARY"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"

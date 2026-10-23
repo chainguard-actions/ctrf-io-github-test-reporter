@@ -1,0 +1,46 @@
+name: Test multiple reports enabled simultaneously
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-report-with-failures.json
+          summary-report: true
+          test-report: true
+          failed-report: true
+          summary: true
+          annotate: false
+
+      - name: Assert summary output is non-empty
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary length: ${#SUMMARY}"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert report output contains expected fields
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report: $REPORT"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          # Check for summary fields
+          if echo "$REPORT" | grep -q '"tests"' && echo "$REPORT" | grep -q '"failed"'; then
+            echo "PASS: report contains expected fields"
+          else
+            echo "FAIL: report is missing expected fields"
+            exit 1
+          fi

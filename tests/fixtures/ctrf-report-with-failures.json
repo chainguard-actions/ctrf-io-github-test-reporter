@@ -1,0 +1,65 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 4,
+      "passed": 2,
+      "failed": 2,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1700000000000,
+      "stop": 1700000005000
+    },
+    "tests": [
+      {
+        "name": "should add two numbers correctly",
+        "duration": 10,
+        "status": "passed",
+        "rawStatus": "passed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      },
+      {
+        "name": "should subtract two numbers correctly",
+        "duration": 5,
+        "status": "passed",
+        "rawStatus": "passed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      },
+      {
+        "name": "should divide by zero safely",
+        "duration": 15,
+        "status": "failed",
+        "rawStatus": "failed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests",
+        "message": "Expected: Infinity\nReceived: Error: Division by zero"
+      },
+      {
+        "name": "should handle negative numbers",
+        "duration": 12,
+        "status": "failed",
+        "rawStatus": "failed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests",
+        "message": "Expected: -5\nReceived: 5"
+      }
+    ]
+  }
+}

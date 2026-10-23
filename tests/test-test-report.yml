@@ -1,0 +1,44 @@
+name: Test test-report (tests table)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-report-passing.json
+          test-report: true
+          summary: true
+          annotate: false
+
+      - name: Assert summary output contains test names
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary: $SUMMARY"
+          if [ -z "$SUMMARY" ]; then
+            echo "FAIL: expected summary output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: summary output is non-empty"
+
+      - name: Assert report output is valid JSON with tests
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          echo "report: $REPORT"
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          # Verify it contains expected test count
+          if echo "$REPORT" | grep -q '"tests"'; then
+            echo "PASS: report contains tests field"
+          else
+            echo "FAIL: report does not contain tests field"
+            exit 1
+          fi

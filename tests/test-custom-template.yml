@@ -1,0 +1,38 @@
+name: Test custom report with template-path
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          report-path: tests/fixtures/ctrf-report-passing.json
+          template-path: tests/fixtures/custom-template.hbs
+          custom-report: true
+          summary: true
+          annotate: false
+
+      - name: Assert summary contains custom template content
+        env:
+          SUMMARY: ${{ steps.action.outputs.summary }}
+        run: |
+          echo "summary: $SUMMARY"
+          if ! echo "$SUMMARY" | grep -q "CUSTOM-TEMPLATE-MARKER"; then
+            echo "FAIL: expected summary to contain custom template marker"
+            exit 1
+          fi
+          echo "PASS: custom template rendered"
+
+      - name: Assert report output is non-empty
+        env:
+          REPORT: ${{ steps.action.outputs.report }}
+        run: |
+          if [ -z "$REPORT" ]; then
+            echo "FAIL: expected report output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: report output is non-empty"

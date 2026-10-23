@@ -1,0 +1,63 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 4,
+      "passed": 2,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 2,
+      "other": 0,
+      "start": 1700000000000,
+      "stop": 1700000005000
+    },
+    "tests": [
+      {
+        "name": "should add two numbers correctly",
+        "duration": 10,
+        "status": "passed",
+        "rawStatus": "passed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      },
+      {
+        "name": "should subtract two numbers correctly",
+        "duration": 5,
+        "status": "passed",
+        "rawStatus": "passed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      },
+      {
+        "name": "should handle edge case A",
+        "duration": 0,
+        "status": "skipped",
+        "rawStatus": "skipped",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      },
+      {
+        "name": "should handle edge case B",
+        "duration": 0,
+        "status": "skipped",
+        "rawStatus": "skipped",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      }
+    ]
+  }
+}

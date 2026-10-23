@@ -1,0 +1,52 @@
+{
+  "results": {
+    "tool": {
+      "name": "jest"
+    },
+    "summary": {
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1700000000000,
+      "stop": 1700000005000
+    },
+    "tests": [
+      {
+        "name": "should add two numbers correctly",
+        "duration": 10,
+        "status": "passed",
+        "rawStatus": "passed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      },
+      {
+        "name": "should subtract two numbers correctly",
+        "duration": 5,
+        "status": "passed",
+        "rawStatus": "passed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      },
+      {
+        "name": "should multiply two numbers correctly",
+        "duration": 8,
+        "status": "passed",
+        "rawStatus": "passed",
+        "type": "unit",
+        "filePath": "/src/math.test.ts",
+        "retries": 0,
+        "flaky": false,
+        "suite": "Math Tests"
+      }
+    ]
+  }
+}
