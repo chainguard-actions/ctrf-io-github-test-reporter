@@ -6,15 +6,15 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 ## Versions
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| v1.0.24 | [`v1.0.24`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.0.24) | [`0d96b53`](https://github.com/ctrf-io/github-test-reporter/commit/0d96b539965e08c6f15bc2a25e2dd9e92d15ed5d) |
-| v1.1.0 | [`v1.1.0`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.1.0) | [`e500b99`](https://github.com/ctrf-io/github-test-reporter/commit/e500b992f936420eb633c91644cf10d4d71df700) |
-| v1.1.1 | [`v1.1.1`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.1.1) | [`9ad85b9`](https://github.com/ctrf-io/github-test-reporter/commit/9ad85b91f851ff39e7da5f82981d30b9e637e163) |
-| v1.2.0 | [`v1.2.0`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.2.0) | [`ab7aec6`](https://github.com/ctrf-io/github-test-reporter/commit/ab7aec6247c2fe9b2774ae15ea6f902aea1ee19c) |
-| v1.3.0 | [`v1.3.0`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.0) | [`7974087`](https://github.com/ctrf-io/github-test-reporter/commit/7974087018bf4857cf5a9d78723e152038c3fa31) |
-| v1.3.1 | [`v1.3.1`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.1) | [`78d9543`](https://github.com/ctrf-io/github-test-reporter/commit/78d95437583fad33c98174a2d2f74f789c048d4e) |
-| v1.3.2 | [`v1.3.2`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.2) | [`dbb0895`](https://github.com/ctrf-io/github-test-reporter/commit/dbb08957b5b2af918b39136ab2c5532002c7649b) |
+| Version | Tag | Upstream commit | Hardening report |
+|---------|-----|-----------------|------------------|
+| v1.0.24 | [`v1.0.24`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.0.24) | [`0d96b53`](https://github.com/ctrf-io/github-test-reporter/commit/0d96b539965e08c6f15bc2a25e2dd9e92d15ed5d) | [`HARDENING.md`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/blob/v1.0.24/HARDENING.md) |
+| v1.1.0 | [`v1.1.0`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.1.0) | [`e500b99`](https://github.com/ctrf-io/github-test-reporter/commit/e500b992f936420eb633c91644cf10d4d71df700) | [`HARDENING.md`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/blob/v1.1.0/HARDENING.md) |
+| v1.1.1 | [`v1.1.1`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.1.1) | [`9ad85b9`](https://github.com/ctrf-io/github-test-reporter/commit/9ad85b91f851ff39e7da5f82981d30b9e637e163) | [`HARDENING.md`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/blob/v1.1.1/HARDENING.md) |
+| v1.2.0 | [`v1.2.0`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.2.0) | [`ab7aec6`](https://github.com/ctrf-io/github-test-reporter/commit/ab7aec6247c2fe9b2774ae15ea6f902aea1ee19c) | [`HARDENING.md`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/blob/v1.2.0/HARDENING.md) |
+| v1.3.0 | [`v1.3.0`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.0) | [`7974087`](https://github.com/ctrf-io/github-test-reporter/commit/7974087018bf4857cf5a9d78723e152038c3fa31) | [`HARDENING.md`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/blob/v1.3.0/HARDENING.md) |
+| v1.3.1 | [`v1.3.1`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.1) | [`78d9543`](https://github.com/ctrf-io/github-test-reporter/commit/78d95437583fad33c98174a2d2f74f789c048d4e) | [`HARDENING.md`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/blob/v1.3.1/HARDENING.md) |
+| v1.3.2 | [`v1.3.2`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/tree/v1.3.2) | [`dbb0895`](https://github.com/ctrf-io/github-test-reporter/commit/dbb08957b5b2af918b39136ab2c5532002c7649b) | [`HARDENING.md`](https://github.com/chainguard-actions/ctrf-io-github-test-reporter/blob/v1.3.2/HARDENING.md) |
 
 ## Privacy
 
